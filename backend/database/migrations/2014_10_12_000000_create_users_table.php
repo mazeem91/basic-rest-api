@@ -17,7 +17,7 @@ class CreateUsersTable extends Migration
             $table->string('id', 48)->unique();
             $table->string('email');
             $table->enum('status', ['authorised', 'decline', 'refunded']);
-            $table->integer('balance');
+            $table->float('balance');
             $table->string('currency', 16);
             $table->string('provider', 36);
             $table->timestamp('created_at');

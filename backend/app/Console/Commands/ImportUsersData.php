@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\User;
+use JsonMachine\JsonMachine;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use App\DataParsers\DataParserFactory;
@@ -46,7 +47,8 @@ class ImportUsersData extends Command
         $resouresArrayPointer = $this->ask('What is resoures Array Pointer? (Default : "/users" )') ?: "/users";
 
         $parser = DataParserFactory::create($providerParserName);
-        $hydator = new UsersDataHydrator($parser, $jsonFileUrl, $resouresArrayPointer);
+        $usersData = JsonMachine::fromFile($jsonFileUrl, $resouresArrayPointer);
+        $hydator = new UsersDataHydrator($parser, $usersData);
 
         $count = 0;
         // This can be enhaced to use queue on further scale

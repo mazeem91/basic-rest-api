@@ -59,7 +59,7 @@ class UsersParserProviderY implements UsersParserInterface
     /**
      * @inheritDoc
      */
-    public function getBalance(array $data): int
+    public function getBalance(array $data): float
     {
         return $data['balance'];
     }

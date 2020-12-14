@@ -17,6 +17,7 @@
 4. Run `docker exec -it basic-rest-api_app_1 bash` to start terminal in app container.
   - Initiate laravel app and run DB migrations:
     - Run `composer install`
+    - Run `php artisan key:generate`
     - Run `php artisan migrate:install`
     - Run `php artisan migrate`
   - Run `php artisan php artisan import-users-data:db-store DataProviderX` then enter file Url and resoures pointer.
@@ -34,3 +35,10 @@
 
 **API Request Example** 
 - `http://localhost/api/v1/users?filter%5Bcurrency%5D=aed`
+
+**Run Unit Tests** 
+- Run `docker exec -it basic-rest-api_app_1 bash` to start terminal in app container, then `php artisan test`
+
+**New Users Providers** 
+- Add new `UsersParserProviderXX` class at `backend\app\DataParsers`.
+- Add `UsersParserProviderXX` name and class name to `backend\app\DataParsers\DataParserFactory` map.

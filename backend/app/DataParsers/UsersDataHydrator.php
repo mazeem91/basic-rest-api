@@ -3,22 +3,19 @@
 namespace App\DataParsers;
 
 use Closure;
-use JsonMachine\JsonMachine;
+use IteratorAggregate;
 
 class UsersDataHydrator
 {
     protected $usersParser;
-    protected $jsonFileUrl;
-    protected $resouresArrayPointer;
+    protected $usersData;
 
     public function __construct(
         UsersParserInterface $usersParser,
-        string $jsonFileUrl,
-        string $resouresArrayPointer = ''
+        IteratorAggregate $usersData
     ) {
         $this->usersParser = $usersParser;
-        $this->jsonFileUrl = $jsonFileUrl;
-        $this->resouresArrayPointer = $resouresArrayPointer;
+        $this->usersData = $usersData;
     }
 
     /**
@@ -29,8 +26,7 @@ class UsersDataHydrator
      */
     public function apply(Closure $closure)
     {
-        $usersData = JsonMachine::fromFile($this->jsonFileUrl, $this->resouresArrayPointer);
-        foreach ($usersData as $userData) {
+        foreach ($this->usersData as $userData) {
             $user = [];
             $user['id'] = $this->usersParser->getUuid($userData);
             $user['email'] = $this->usersParser->getEmail($userData);

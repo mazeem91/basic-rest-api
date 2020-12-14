@@ -52,7 +52,7 @@ interface UsersParserInterface
      * @param array $data
      * @return integer
      */
-    public function getBalance(array $data): int;
+    public function getBalance(array $data): float;
 
     /**
      * Parse CreatedAt
