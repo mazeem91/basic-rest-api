@@ -7,14 +7,6 @@ use DateTime;
 interface UsersParserInterface
 {
     /**
-     * Get Provider file for parsing
-     *
-     * @param array $data
-     * @return string
-     */
-    public function getDataProviderFile(): string;
-
-    /**
      * Get Provider name
      *
      * @param array $data

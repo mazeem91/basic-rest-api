@@ -3,11 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Models\User;
-use JsonMachine\JsonMachine;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use App\DataParsers\DataParserFactory;
-use App\DataParsers\UsersParserProviderX;
+use App\DataParsers\UsersDataHydrator;
 
 class ImportUsersData extends Command
 {
@@ -16,7 +15,7 @@ class ImportUsersData extends Command
      *
      * @var string
      */
-    protected $signature = 'import-users-data:db-store';
+    protected $signature = 'import-users-data:db-store {providerParserName : Defined in each parser class (DataProviderX, DataProviderY)}';
 
     /**
      * The console command description.
@@ -42,40 +41,24 @@ class ImportUsersData extends Command
      */
     public function handle()
     {
-        $parser = DataParserFactory::create(UsersParserProviderX::PROVIDER_NAME);
-        $usersJson = JsonMachine::fromFile($parser->getDataProviderFile());
-        $usersData = $this->getUsers($usersJson);
+        $providerParserName = $this->argument('providerParserName');
+        $jsonFileUrl = $this->ask('Enter the json File Url?');
+        $resouresArrayPointer = $this->ask('What is resoures Array Pointer? (Default : "/users" )') ?: "/users";
+
+        $parser = DataParserFactory::create($providerParserName);
+        $hydator = new UsersDataHydrator($parser, $jsonFileUrl, $resouresArrayPointer);
 
         $count = 0;
-        foreach ($usersData as $userData) {
+        // This can be enhaced to use queue on further scale
+        $hydator->apply(function ($user) use (&$count) {
             try {
-                User::insert($this->parseUser($userData, $parser));
+                User::insert($user);
             } catch (\Throwable $th) {
                 Log::error($th);
             }
             echo 'Progress: ' . ++$count . " User/s processed \n";
-        }
+        });
+
         echo "Check logs for errors.\n";
     }
-
-    protected function getUsers($usersJson)
-    {
-        foreach ($usersJson as $key => $data) {
-        }
-        return $data;
-    }
-
-    public function parseUser($userData, $parser)
-    {
-        $user = [];
-        $user['id'] = $parser->getUuid($userData);
-        $user['email'] = $parser->getEmail($userData);
-        $user['currency'] = $parser->getCurrency($userData);
-        $user['status'] = $parser->getStatus($userData);
-        $user['balance'] = $parser->getBalance($userData);
-        $user['created_at'] = $parser->getCreatedAt($userData);
-        $user['provider'] = $parser->getDataProviderName($userData);
-        return $user;
-    }
-
 }

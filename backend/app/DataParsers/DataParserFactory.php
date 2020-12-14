@@ -6,6 +6,7 @@ class DataParserFactory
 {
     public const DATA_PARSER_MAP = [
         UsersParserProviderX::PROVIDER_NAME => UsersParserProviderX::class,
+        UsersParserProviderY::PROVIDER_NAME => UsersParserProviderY::class,
     ];
 
     public static function create($parserName)

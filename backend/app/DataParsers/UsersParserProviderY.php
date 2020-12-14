@@ -4,9 +4,9 @@ namespace App\DataParsers;
 
 use DateTime;
 
-class UsersParserProviderX implements UsersParserInterface
+class UsersParserProviderY implements UsersParserInterface
 {
-    public const PROVIDER_NAME = "DataProviderX";
+    public const PROVIDER_NAME = "DataProviderY";
 
     /**
      * Get Provider name
@@ -24,7 +24,7 @@ class UsersParserProviderX implements UsersParserInterface
      */
     public function getUuid(array $data): string
     {
-        return $data['parentIdentification'];
+        return $data['id'];
     }
 
     /**
@@ -32,7 +32,7 @@ class UsersParserProviderX implements UsersParserInterface
      */
     public function getEmail(array $data): string
     {
-        return $data['parentEmail'];
+        return $data['email'];
     }
 
     /**
@@ -40,7 +40,7 @@ class UsersParserProviderX implements UsersParserInterface
      */
     public function getCurrency(array $data): string
     {
-        return $data['Currency'];
+        return $data['currency'];
     }
 
     /**
@@ -49,11 +49,11 @@ class UsersParserProviderX implements UsersParserInterface
     public function getStatus(array $data): string
     {
         $map = [
-            1 => 'authorised',
-            2 => 'decline',
-            3 => 'refunded'
+            100 => 'authorised',
+            200 => 'decline',
+            300 => 'refunded'
         ];
-        return $map[$data['statusCode']];
+        return $map[$data['status']];
     }
 
     /**
@@ -61,7 +61,7 @@ class UsersParserProviderX implements UsersParserInterface
      */
     public function getBalance(array $data): int
     {
-        return $data['parentAmount'];
+        return $data['balance'];
     }
 
     /**
@@ -69,6 +69,6 @@ class UsersParserProviderX implements UsersParserInterface
      */
     public function getCreatedAt(array $data): DateTime
     {
-        return new DateTime($data['registerationDate']);
+        return DateTime::createFromFormat('d/m/Y', $data['created_at']);
     }
 }

@@ -1,61 +1,36 @@
-# docker-laravel 🐳
+# basic-rest-api
 
-![License](https://img.shields.io/github/license/ucan-lab/docker-laravel?color=f05340)
-![Stars](https://img.shields.io/github/stars/ucan-lab/docker-laravel?color=f05340)
-![Issues](https://img.shields.io/github/issues/ucan-lab/docker-laravel?color=f05340)
-![Forks](https://img.shields.io/github/forks/ucan-lab/docker-laravel?color=f05340)
 
-## Introduction
+## Prerequisites
 
-Build a simple laravel development environment with docker-compose.
+- Docker and docker compose. ([Download Docker Community Edition](https://hub.docker.com/search/?type=edition&offering=community))
+- Check current used ports on your machine (app is using port 80 and 3306 , change them in .env file in root DIR if required).
 
-## Usage
 
-```bash
-$ git clone git@github.com:ucan-lab/docker-laravel.git
-$ cd docker-laravel
-$ make create-project # Install the latest Laravel project
-$ make install-recommend-packages # Not required
-```
+**Installation steps:** 
+1. Run `docker-compose up -d` to start app containers.
 
-http://localhost
+2. Copy `.env.example` to `.env` in `backend` DIR.
 
-Read this [Makefile](https://github.com/ucan-lab/docker-laravel/blob/master/Makefile).
+3. Give `write` permissions to `storage` in `backend` DIR.
 
-## Tips
+4. Run `docker exec -it basic-rest-api_app_1 bash` to start terminal in app container.
+  - Initiate laravel app and run DB migrations:
+    - Run `composer install`
+    - Run `php artisan migrate:install`
+    - Run `php artisan migrate`
+  - Run `php artisan php artisan import-users-data:db-store DataProviderX` then enter file Url and resoures pointer.
+  - Run `php artisan php artisan import-users-data:db-store DataProviderY` then enter file Url and resoures pointer.
 
-Read this [Wiki](https://github.com/ucan-lab/docker-laravel/wiki).
+**Run** 
+- Just `GET` request to `localhost/api/v1/users`.
 
-## Container structure
+**API Filters** 
+- `filter[status]`
+- `filter[currency]`
+- `filter[balanceMin]`
+- `filter[balanceMax]`
+- `filter[provider]`
 
-```bash
-├── app
-├── web
-└── db
-```
-
-### app container
-
-- Base image
-  - [php](https://hub.docker.com/_/php):7.4-fpm-buster
-  - [composer](https://hub.docker.com/_/composer):2.0
-
-### web container
-
-- Base image
-  - [nginx](https://hub.docker.com/_/nginx):1.18-alpine
-  - [node](https://hub.docker.com/_/node):14.2-alpine
-
-### db container
-
-- Base image
-  - [mysql](https://hub.docker.com/_/mysql):8.0
-
-#### Persistent MySQL Storage
-
-By default, the [named volume](https://docs.docker.com/compose/compose-file/#volumes) is mounted, so MySQL data remains even if the container is destroyed.
-If you want to delete MySQL data intentionally, execute the following command.
-
-```bash
-$ docker-compose down -v && docker-compose up
-```
+**API Request Example** 
+- `http://localhost/api/v1/users?filter%5Bcurrency%5D=aed`
